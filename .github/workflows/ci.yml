@@ -1,0 +1,100 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check text encoding
+        run: npm run check:encoding
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev
+
+  infra-smoke:
+    name: Real PostgreSQL/Redis Smoke
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: thechat
+          POSTGRES_PASSWORD: thechat
+          POSTGRES_DB: thechat_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U thechat -d thechat_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply migrations
+        run: npm run db:migrate
+        env:
+          DATABASE_URL: postgres://thechat:thechat@127.0.0.1:5432/thechat_test
+
+      - name: Run real infrastructure smoke test
+        run: npm run test:infra
+        env:
+          RUN_REAL_INFRA_TESTS: "true"
+          DATABASE_URL: postgres://thechat:thechat@127.0.0.1:5432/thechat_test
+          REDIS_URL: redis://127.0.0.1:6379
+          JWT_SECRET: ci-real-infra-secret-value

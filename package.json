@@ -1,0 +1,61 @@
+{
+  "name": "the-chat-server",
+  "version": "1.0.0",
+  "description": "Backend foundation for TheChat real-time service.",
+  "main": "dist/app/server.js",
+  "scripts": {
+    "dev": "tsx watch src/app/server.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/app/server.js",
+    "prepare": "husky",
+    "check:encoding": "node scripts/check-mojibake.mjs",
+    "commitlint": "commitlint --edit",
+    "commitlint:message": "commitlint --verbose",
+    "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\"",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:infra": "vitest run test/integration/real-infra.smoke.test.ts",
+    "test:watch": "vitest",
+    "db:generate": "drizzle-kit generate --config drizzle.config.ts",
+    "db:migrate": "drizzle-kit migrate --config drizzle.config.ts"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.2",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@types/node": "24.12.2",
+    "@types/pg": "8.20.0",
+    "@types/ws": "8.18.1",
+    "@typescript-eslint/eslint-plugin": "8.58.0",
+    "@typescript-eslint/parser": "8.58.0",
+    "drizzle-kit": "0.31.10",
+    "eslint": "8.57.1",
+    "husky": "^9.1.7",
+    "pg-mem": "3.0.14",
+    "tsx": "4.21.0",
+    "typescript": "5.9.3",
+    "vitest": "3.2.4"
+  },
+  "engines": {
+    "node": ">=24.0.0 <25"
+  },
+  "private": true,
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/jwt": "10.0.0",
+    "@fastify/swagger": "9.7.0",
+    "@fastify/swagger-ui": "5.2.5",
+    "@fastify/type-provider-typebox": "6.1.0",
+    "@fastify/websocket": "11.2.0",
+    "@sinclair/typebox": "0.34.49",
+    "dotenv": "17.4.1",
+    "drizzle-orm": "0.45.2",
+    "fastify": "5.8.5",
+    "fastify-plugin": "5.1.0",
+    "ioredis": "5.10.1",
+    "pg": "8.20.0",
+    "ws": "8.20.0",
+    "zod": "3.25.76"
+  }
+}

@@ -1,0 +1,368 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2440" height="2100" viewBox="0 0 2440 2100" role="img" aria-labelledby="title desc">
+  <title id="title">TheChat Backend Sequence Diagram</title>
+  <desc id="desc">Sequence diagram for TheChat backend authentication, WebSocket subscription, message creation, Redis realtime bus fan-out, and disconnect presence update.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2 2 L10 6 L2 10 Z" fill="#2563eb" />
+    </marker>
+    <marker id="returnArrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2 2 L10 6 L2 10 Z" fill="#64748b" />
+    </marker>
+    <style>
+      .canvas { fill: #f8fafc; }
+      .title { fill: #0f172a; font: 700 34px Arial, sans-serif; }
+      .subtitle { fill: #475569; font: 16px Arial, sans-serif; }
+      .note { fill: #eef6ff; stroke: #93c5fd; stroke-width: 1.5; }
+      .noteText { fill: #1e3a8a; font: 15px Arial, sans-serif; }
+      .box { fill: #ffffff; stroke: #334155; stroke-width: 1.5; }
+      .actor { fill: #fff7ed; stroke: #ea580c; stroke-width: 1.5; }
+      .participant { fill: #ffffff; stroke: #334155; stroke-width: 1.5; }
+      .participantText { fill: #0f172a; font: 700 13px Arial, sans-serif; text-anchor: middle; }
+      .lifeline { stroke: #cbd5e1; stroke-width: 1.4; stroke-dasharray: 7 7; }
+      .message { stroke: #2563eb; stroke-width: 2; marker-end: url(#arrow); }
+      .return { stroke: #64748b; stroke-width: 2; stroke-dasharray: 7 5; marker-end: url(#returnArrow); }
+      .labelBg { fill: #f8fafc; opacity: 0.94; }
+      .label { fill: #0f172a; font: 14px Arial, sans-serif; text-anchor: middle; }
+      .returnLabel { fill: #334155; font: 14px Arial, sans-serif; text-anchor: middle; }
+      .phase { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.3; }
+      .phaseTitle { fill: #334155; font: 700 14px Arial, sans-serif; }
+      .alt { fill: none; stroke: #94a3b8; stroke-width: 1.7; }
+      .altHeader { fill: #e2e8f0; stroke: #94a3b8; stroke-width: 1.7; }
+      .altText { fill: #334155; font: 700 14px Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <rect class="canvas" x="0" y="0" width="2440" height="2100" />
+  <text class="title" x="70" y="58">TheChat Backend Sequence Diagram</text>
+  <text class="subtitle" x="70" y="86">Auth, WebSocket presence, chat subscription, message creation, Redis fan-out, and disconnect flow.</text>
+
+  <rect class="note" x="70" y="112" width="1080" height="54" rx="6" />
+  <text class="noteText" x="90" y="135">buildApp registers config, cors, errors, db, redis, auth, websocket, docs, then domain modules.</text>
+  <text class="noteText" x="90" y="156">HTTP routes stay thin: route -&gt; handler -&gt; service -&gt; repository -&gt; PostgreSQL.</text>
+
+  <rect class="note" x="1190" y="112" width="1180" height="54" rx="6" />
+  <text class="noteText" x="1210" y="135">Chats and presence bind realtime adapters used by the WebSocket plugin.</text>
+  <text class="noteText" x="1210" y="156">Realtime delivery goes through Redis Pub/Sub, validates event shape, then sends to indexed subscribed sockets.</text>
+
+  <g id="participants">
+    <line class="lifeline" x1="90" y1="255" x2="90" y2="2070" />
+    <line class="lifeline" x1="260" y1="255" x2="260" y2="2070" />
+    <line class="lifeline" x1="430" y1="255" x2="430" y2="2070" />
+    <line class="lifeline" x1="600" y1="255" x2="600" y2="2070" />
+    <line class="lifeline" x1="770" y1="255" x2="770" y2="2070" />
+    <line class="lifeline" x1="940" y1="255" x2="940" y2="2070" />
+    <line class="lifeline" x1="1110" y1="255" x2="1110" y2="2070" />
+    <line class="lifeline" x1="1280" y1="255" x2="1280" y2="2070" />
+    <line class="lifeline" x1="1450" y1="255" x2="1450" y2="2070" />
+    <line class="lifeline" x1="1620" y1="255" x2="1620" y2="2070" />
+    <line class="lifeline" x1="1790" y1="255" x2="1790" y2="2070" />
+    <line class="lifeline" x1="1960" y1="255" x2="1960" y2="2070" />
+    <line class="lifeline" x1="2130" y1="255" x2="2130" y2="2070" />
+    <line class="lifeline" x1="2300" y1="255" x2="2300" y2="2070" />
+
+    <rect class="actor" x="28" y="195" width="124" height="60" rx="6" />
+    <text class="participantText" x="90" y="219">Sender</text>
+    <text class="participantText" x="90" y="238">client</text>
+
+    <rect class="participant" x="198" y="195" width="124" height="60" rx="6" />
+    <text class="participantText" x="260" y="219">Fastify</text>
+    <text class="participantText" x="260" y="238">HTTP API</text>
+
+    <rect class="participant" x="368" y="195" width="124" height="60" rx="6" />
+    <text class="participantText" x="430" y="219">Auth</text>
+    <text class="participantText" x="430" y="238">plugin</text>
+
+    <rect class="participant" x="538" y="195" width="124" height="60" rx="6" />
+    <text class="participantText" x="600" y="219">Auth</text>
+    <text class="participantText" x="600" y="238">module</text>
+
+    <rect class="participant" x="708" y="195" width="124" height="60" rx="6" />
+    <text class="participantText" x="770" y="219">Messages</text>
+    <text class="participantText" x="770" y="238">module</text>
+
+    <rect class="participant" x="878" y="195" width="124" height="60" rx="6" />
+    <text class="participantText" x="940" y="219">Chats</text>
+    <text class="participantText" x="940" y="238">module</text>
+
+    <rect class="participant" x="1048" y="195" width="124" height="60" rx="6" />
+    <text class="participantText" x="1110" y="219">WebSocket</text>
+    <text class="participantText" x="1110" y="238">plugin</text>
+
+    <rect class="participant" x="1218" y="195" width="124" height="60" rx="6" />
+    <text class="participantText" x="1280" y="219">WS event</text>
+    <text class="participantText" x="1280" y="238">router</text>
+
+    <rect class="participant" x="1388" y="195" width="124" height="60" rx="6" />
+    <text class="participantText" x="1450" y="219">Presence</text>
+    <text class="participantText" x="1450" y="238">module</text>
+
+    <rect class="participant" x="1558" y="195" width="124" height="60" rx="6" />
+    <text class="participantText" x="1620" y="219">Connection</text>
+    <text class="participantText" x="1620" y="238">Index</text>
+
+    <rect class="participant" x="1728" y="195" width="124" height="60" rx="6" />
+    <text class="participantText" x="1790" y="219">Redis</text>
+    <text class="participantText" x="1790" y="238">bus</text>
+
+    <rect class="participant" x="1898" y="195" width="124" height="60" rx="6" />
+    <text class="participantText" x="1960" y="219">Realtime</text>
+    <text class="participantText" x="1960" y="238">Delivery</text>
+
+    <rect class="participant" x="2068" y="195" width="124" height="60" rx="6" />
+    <text class="participantText" x="2130" y="219">PostgreSQL</text>
+    <text class="participantText" x="2130" y="238">DB</text>
+
+    <rect class="actor" x="2238" y="195" width="124" height="60" rx="6" />
+    <text class="participantText" x="2300" y="219">Recipient</text>
+    <text class="participantText" x="2300" y="238">client</text>
+  </g>
+
+  <g id="auth-flow">
+    <rect class="phase" x="52" y="283" width="2196" height="146" rx="6" />
+    <text class="phaseTitle" x="70" y="307">1. Login and token issue</text>
+
+    <line class="message" x1="90" y1="330" x2="260" y2="330" />
+    <rect class="labelBg" x="118" y="315" width="114" height="20" rx="4" />
+    <text class="label" x="175" y="330">POST /auth/login</text>
+
+    <line class="message" x1="260" y1="358" x2="600" y2="358" />
+    <rect class="labelBg" x="363" y="343" width="134" height="20" rx="4" />
+    <text class="label" x="430" y="358">login credentials</text>
+
+    <line class="message" x1="600" y1="386" x2="2130" y2="386" />
+    <rect class="labelBg" x="1263" y="371" width="204" height="20" rx="4" />
+    <text class="label" x="1365" y="386">read user + create session</text>
+
+    <line class="return" x1="2130" y1="414" x2="600" y2="414" />
+    <rect class="labelBg" x="1271" y="399" width="188" height="20" rx="4" />
+    <text class="returnLabel" x="1365" y="414">user + session persisted</text>
+
+    <line class="return" x1="600" y1="442" x2="90" y2="442" />
+    <rect class="labelBg" x="252" y="427" width="186" height="20" rx="4" />
+    <text class="returnLabel" x="345" y="442">access + refresh tokens</text>
+  </g>
+
+  <g id="connection-flow">
+    <rect class="phase" x="52" y="463" width="2196" height="306" rx="6" />
+    <text class="phaseTitle" x="70" y="487">2. WebSocket connection and presence publish</text>
+
+    <line class="message" x1="2300" y1="514" x2="1110" y2="514" />
+    <rect class="labelBg" x="1602" y="499" width="206" height="20" rx="4" />
+    <text class="label" x="1705" y="514">GET /ws with access token</text>
+
+    <line class="message" x1="1110" y1="542" x2="430" y2="542" />
+    <rect class="labelBg" x="680" y="527" width="180" height="20" rx="4" />
+    <text class="label" x="770" y="542">verify JWT access token</text>
+
+    <line class="return" x1="430" y1="570" x2="1110" y2="570" />
+    <rect class="labelBg" x="740" y="555" width="60" height="20" rx="4" />
+    <text class="returnLabel" x="770" y="570">user id</text>
+
+    <line class="message" x1="1110" y1="598" x2="1450" y2="598" />
+    <rect class="labelBg" x="1158" y="583" width="244" height="20" rx="4" />
+    <text class="label" x="1280" y="598">registerRealtimeConnection</text>
+
+    <line class="message" x1="1450" y1="626" x2="1790" y2="626" />
+    <rect class="labelBg" x="1508" y="611" width="224" height="20" rx="4" />
+    <text class="label" x="1620" y="626">store active connection</text>
+
+    <line class="message" x1="1450" y1="654" x2="2130" y2="654" />
+    <rect class="labelBg" x="1734" y="639" width="112" height="20" rx="4" />
+    <text class="label" x="1790" y="654">update lastSeenAt</text>
+
+    <line class="return" x1="1450" y1="682" x2="1110" y2="682" />
+    <rect class="labelBg" x="1212" y="667" width="136" height="20" rx="4" />
+    <text class="returnLabel" x="1280" y="682">presence snapshot</text>
+
+    <line class="message" x1="1110" y1="710" x2="1620" y2="710" />
+    <rect class="labelBg" x="1240" y="695" width="250" height="20" rx="4" />
+    <text class="label" x="1365" y="710">addConnection(connectionId, userId)</text>
+
+    <line class="message" x1="1110" y1="738" x2="1790" y2="738" />
+    <rect class="labelBg" x="1348" y="723" width="204" height="20" rx="4" />
+    <text class="label" x="1450" y="738">publish presence.updated</text>
+
+    <line class="return" x1="1790" y1="766" x2="1960" y2="766" />
+    <rect class="labelBg" x="1795" y="751" width="160" height="20" rx="4" />
+    <text class="returnLabel" x="1875" y="766">presence.updated</text>
+
+    <line class="message" x1="1960" y1="794" x2="1620" y2="794" />
+    <rect class="labelBg" x="1702" y="779" width="176" height="20" rx="4" />
+    <text class="label" x="1790" y="794">find presence watchers</text>
+
+    <line class="return" x1="1960" y1="822" x2="2300" y2="822" />
+    <rect class="labelBg" x="2026" y="807" width="208" height="20" rx="4" />
+    <text class="returnLabel" x="2130" y="822">presence.updated if watched</text>
+  </g>
+
+  <g id="subscribe-flow">
+    <rect class="phase" x="52" y="803" width="2196" height="222" rx="6" />
+    <text class="phaseTitle" x="70" y="827">3. Chat subscription</text>
+
+    <line class="message" x1="2300" y1="858" x2="1110" y2="858" />
+    <rect class="labelBg" x="1623" y="843" width="164" height="20" rx="4" />
+    <text class="label" x="1705" y="858">chat.subscribe(chatId)</text>
+
+    <line class="message" x1="1110" y1="886" x2="1280" y2="886" />
+    <rect class="labelBg" x="1136" y="871" width="118" height="20" rx="4" />
+    <text class="label" x="1195" y="886">route event</text>
+
+    <line class="message" x1="1280" y1="914" x2="940" y2="914" />
+    <rect class="labelBg" x="1017" y="899" width="186" height="20" rx="4" />
+    <text class="label" x="1110" y="914">isUserChatMember</text>
+
+    <line class="message" x1="940" y1="942" x2="2130" y2="942" />
+    <rect class="labelBg" x="1462" y="927" width="146" height="20" rx="4" />
+    <text class="label" x="1535" y="942">check chat_members</text>
+
+    <line class="return" x1="2130" y1="970" x2="940" y2="970" />
+    <rect class="labelBg" x="1460" y="955" width="150" height="20" rx="4" />
+    <text class="returnLabel" x="1535" y="970">membership result</text>
+
+    <line class="return" x1="940" y1="998" x2="1280" y2="998" />
+    <rect class="labelBg" x="1080" y="983" width="60" height="20" rx="4" />
+    <text class="returnLabel" x="1110" y="998">allowed</text>
+
+    <line class="message" x1="1280" y1="1026" x2="1620" y2="1026" />
+    <rect class="labelBg" x="1322" y="1011" width="256" height="20" rx="4" />
+    <text class="label" x="1450" y="1026">subscribeConnectionToChat</text>
+
+    <line class="return" x1="1280" y1="1054" x2="2300" y2="1054" />
+    <rect class="labelBg" x="1730" y="1039" width="120" height="20" rx="4" />
+    <text class="returnLabel" x="1790" y="1054">chat.subscribed</text>
+  </g>
+
+  <g id="message-flow">
+    <rect class="phase" x="52" y="1085" width="2196" height="594" rx="6" />
+    <text class="phaseTitle" x="70" y="1109">4. Message creation and realtime fan-out</text>
+
+    <line class="message" x1="90" y1="1138" x2="260" y2="1138" />
+    <rect class="labelBg" x="97" y="1123" width="156" height="20" rx="4" />
+    <text class="label" x="175" y="1138">POST /v1/messages</text>
+
+    <line class="message" x1="260" y1="1166" x2="430" y2="1166" />
+    <rect class="labelBg" x="264" y="1151" width="162" height="20" rx="4" />
+    <text class="label" x="345" y="1166">authenticate bearer</text>
+
+    <line class="return" x1="430" y1="1194" x2="260" y2="1194" />
+    <rect class="labelBg" x="289" y="1179" width="112" height="20" rx="4" />
+    <text class="returnLabel" x="345" y="1194">request.user.sub</text>
+
+    <line class="message" x1="260" y1="1222" x2="770" y2="1222" />
+    <rect class="labelBg" x="402" y="1207" width="226" height="20" rx="4" />
+    <text class="label" x="515" y="1222">createMessageWithRecipients</text>
+
+    <line class="message" x1="770" y1="1250" x2="2130" y2="1250" />
+    <rect class="labelBg" x="1324" y="1235" width="252" height="20" rx="4" />
+    <text class="label" x="1450" y="1250">insert if sender is chat member</text>
+
+    <rect class="alt" x="65" y="1276" width="2170" height="270" rx="4" />
+    <rect class="altHeader" x="65" y="1276" width="170" height="26" rx="4" />
+    <text class="altText" x="82" y="1294">alt new message</text>
+
+    <line class="return" x1="2130" y1="1320" x2="770" y2="1320" />
+    <rect class="labelBg" x="1370" y="1305" width="160" height="20" rx="4" />
+    <text class="returnLabel" x="1450" y="1320">inserted message id</text>
+
+    <line class="message" x1="770" y1="1348" x2="2130" y2="1348" />
+    <rect class="labelBg" x="1302" y="1333" width="296" height="20" rx="4" />
+    <text class="label" x="1450" y="1348">load message DTO + member user ids</text>
+
+    <line class="return" x1="2130" y1="1376" x2="770" y2="1376" />
+    <rect class="labelBg" x="1366" y="1361" width="168" height="20" rx="4" />
+    <text class="returnLabel" x="1450" y="1376">message + recipients</text>
+
+    <line class="return" x1="770" y1="1404" x2="260" y2="1404" />
+    <rect class="labelBg" x="396" y="1389" width="238" height="20" rx="4" />
+    <text class="returnLabel" x="515" y="1404">message, recipients, created=true</text>
+
+    <line class="message" x1="260" y1="1432" x2="1790" y2="1432" />
+    <rect class="labelBg" x="940" y="1417" width="170" height="20" rx="4" />
+    <text class="label" x="1025" y="1432">publish message.created</text>
+
+    <line class="return" x1="1790" y1="1460" x2="1960" y2="1460" />
+    <rect class="labelBg" x="1800" y="1445" width="150" height="20" rx="4" />
+    <text class="returnLabel" x="1875" y="1460">message.created</text>
+
+    <line class="message" x1="1960" y1="1488" x2="1620" y2="1488" />
+    <rect class="labelBg" x="1680" y="1473" width="220" height="20" rx="4" />
+    <text class="label" x="1790" y="1488">list subscribed connections</text>
+
+    <line class="return" x1="1960" y1="1516" x2="2300" y2="1516" />
+    <rect class="labelBg" x="2070" y="1501" width="120" height="20" rx="4" />
+    <text class="returnLabel" x="2130" y="1516">message.created</text>
+
+    <line class="return" x1="1960" y1="1544" x2="90" y2="1544" />
+    <rect class="labelBg" x="888" y="1529" width="274" height="20" rx="4" />
+    <text class="returnLabel" x="1025" y="1544">message.created if sender subscribed</text>
+
+    <line class="return" x1="260" y1="1572" x2="90" y2="1572" />
+    <rect class="labelBg" x="113" y="1557" width="124" height="20" rx="4" />
+    <text class="returnLabel" x="175" y="1572">201 { data }</text>
+
+    <rect class="alt" x="65" y="1588" width="2170" height="154" rx="4" />
+    <rect class="altHeader" x="65" y="1588" width="230" height="26" rx="4" />
+    <text class="altText" x="82" y="1606">else duplicate clientMessageId</text>
+
+    <line class="return" x1="2130" y1="1632" x2="770" y2="1632" />
+    <rect class="labelBg" x="1374" y="1617" width="152" height="20" rx="4" />
+    <text class="returnLabel" x="1450" y="1632">existing message id</text>
+
+    <line class="message" x1="770" y1="1660" x2="2130" y2="1660" />
+    <rect class="labelBg" x="1360" y="1645" width="180" height="20" rx="4" />
+    <text class="label" x="1450" y="1660">load existing message</text>
+
+    <line class="return" x1="2130" y1="1688" x2="770" y2="1688" />
+    <rect class="labelBg" x="1376" y="1673" width="148" height="20" rx="4" />
+    <text class="returnLabel" x="1450" y="1688">existing message</text>
+
+    <line class="return" x1="770" y1="1716" x2="260" y2="1716" />
+    <rect class="labelBg" x="388" y="1701" width="254" height="20" rx="4" />
+    <text class="returnLabel" x="515" y="1716">message, recipients=[], created=false</text>
+
+    <line class="return" x1="260" y1="1744" x2="90" y2="1744" />
+    <rect class="labelBg" x="113" y="1729" width="124" height="20" rx="4" />
+    <text class="returnLabel" x="175" y="1744">200 { data }</text>
+  </g>
+
+  <g id="disconnect-flow">
+    <rect class="phase" x="52" y="1774" width="2196" height="292" rx="6" />
+    <text class="phaseTitle" x="70" y="1798">5. Disconnect and final presence update</text>
+
+    <line class="message" x1="2300" y1="1826" x2="1110" y2="1826" />
+    <rect class="labelBg" x="1665" y="1811" width="80" height="20" rx="4" />
+    <text class="label" x="1705" y="1826">close</text>
+
+    <line class="message" x1="1110" y1="1854" x2="1620" y2="1854" />
+    <rect class="labelBg" x="1276" y="1839" width="178" height="20" rx="4" />
+    <text class="label" x="1365" y="1854">removeConnection</text>
+
+    <line class="message" x1="1110" y1="1882" x2="1450" y2="1882" />
+    <rect class="labelBg" x="1162" y="1867" width="236" height="20" rx="4" />
+    <text class="label" x="1280" y="1882">unregisterRealtimeConnection</text>
+
+    <line class="message" x1="1450" y1="1910" x2="1790" y2="1910" />
+    <rect class="labelBg" x="1530" y="1895" width="180" height="20" rx="4" />
+    <text class="label" x="1620" y="1910">remove active connection</text>
+
+    <line class="message" x1="1450" y1="1938" x2="2130" y2="1938" />
+    <rect class="labelBg" x="1616" y="1923" width="348" height="20" rx="4" />
+    <text class="label" x="1790" y="1938">update lastSeenAt when no connections remain</text>
+
+    <line class="return" x1="1450" y1="1966" x2="1110" y2="1966" />
+    <rect class="labelBg" x="1212" y="1951" width="136" height="20" rx="4" />
+    <text class="returnLabel" x="1280" y="1966">presence snapshot</text>
+
+    <line class="message" x1="1110" y1="1994" x2="1790" y2="1994" />
+    <rect class="labelBg" x="1348" y="1979" width="204" height="20" rx="4" />
+    <text class="label" x="1450" y="1994">publish presence.updated</text>
+
+    <line class="return" x1="1790" y1="2022" x2="1960" y2="2022" />
+    <rect class="labelBg" x="1795" y="2007" width="160" height="20" rx="4" />
+    <text class="returnLabel" x="1875" y="2022">presence.updated</text>
+
+    <line class="return" x1="1960" y1="2050" x2="90" y2="2050" />
+    <rect class="labelBg" x="856" y="2035" width="338" height="20" rx="4" />
+    <text class="returnLabel" x="1025" y="2050">presence.updated if watching recipient</text>
+  </g>
+</svg>
