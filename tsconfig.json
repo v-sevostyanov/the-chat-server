@@ -16,5 +16,5 @@
     "outDir": "dist",
     "rootDir": "."
   },
-  "include": ["src", "test", "drizzle.config.ts", "eslint.config.cjs"]
+  "include": ["src", "test", "tools", "drizzle.config.ts", "eslint.config.cjs"]
 }
