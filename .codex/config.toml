@@ -1,0 +1,17 @@
+project_doc_fallback_filenames = []
+project_root_markers = [".git"]
+project_doc_max_bytes = 18000
+tool_output_token_limit = 5000
+model_auto_compact_token_limit = 32000
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"
+
+[sandbox_workspace_write]
+network_access = false
+
+[features]
+multi_agent = false
+
+[windows]
+sandbox = "unelevated"
+sandbox_private_desktop = false
