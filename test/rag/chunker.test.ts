@@ -34,4 +34,20 @@ describe("RAG chunker", () => {
     expect(repeated[0].id).toBe(chunks[0].id);
     expect(repeated[0].contentHash).toBe(chunks[0].contentHash);
   });
+
+  it("preserves indentation inside non-empty chunk boundary lines", () => {
+    const chunks = chunkText({
+      path: "config/example.yml",
+      text: "\n  service:\n    image: postgres\n",
+      maxChunkChars: 100,
+      overlapLines: 0,
+    });
+
+    expect(chunks).toHaveLength(1);
+    expect(chunks[0]).toMatchObject({
+      startLine: 2,
+      endLine: 3,
+      chunkText: "  service:\n    image: postgres",
+    });
+  });
 });

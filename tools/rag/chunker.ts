@@ -44,7 +44,7 @@ export function chunkText(input: {
     if (chunkLines.lines.length > 0) {
       const startLine = startIndex + chunkLines.leadingTrim + 1;
       const endLine = endIndex - chunkLines.trailingTrim;
-      const chunkTextValue = chunkLines.lines.join("\n").trim();
+      const chunkTextValue = chunkLines.lines.join("\n");
       const contentHash = hashContent(chunkTextValue);
 
       chunks.push({

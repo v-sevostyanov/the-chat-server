@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process";
 import { constants } from "node:fs";
-import { access, readFile, stat } from "node:fs/promises";
+import { access, lstat, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
 import type { RagDiscoveryResult, RagSkippedFile, RagSourceFile } from "./types";
@@ -134,6 +134,12 @@ export async function discoverRagFiles(options: {
 
     try {
       await access(absolutePath, constants.R_OK);
+      const linkStat = await lstat(absolutePath);
+      if (linkStat.isSymbolicLink()) {
+        skipped.push({ path: normalizedPath, reason: "symbolic link" });
+        continue;
+      }
+
       const fileStat = await stat(absolutePath);
       if (!fileStat.isFile()) {
         skipped.push({ path: normalizedPath, reason: "not a regular file" });

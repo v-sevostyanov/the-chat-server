@@ -1,4 +1,4 @@
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, rm, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -51,6 +51,39 @@ describe("RAG file discovery", () => {
         { path: ".env", reason: "env file" },
       ]),
     );
+  });
+
+  it("rejects symbolic links before reading file contents", async () => {
+    const rootDir = await mkdtemp(path.join(os.tmpdir(), "rag-discovery-"));
+    const externalDir = await mkdtemp(path.join(os.tmpdir(), "rag-external-"));
+    tempDirs.push(rootDir, externalDir);
+
+    const externalPath = path.join(externalDir, "leak.md");
+    const linkedPath = path.join(rootDir, "linked.md");
+    await writeFile(externalPath, "external content\n");
+
+    try {
+      await symlink(externalPath, linkedPath);
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if (code === "EPERM" || code === "EACCES") {
+        return;
+      }
+
+      throw error;
+    }
+
+    const result = await discoverRagFiles({
+      rootDir,
+      maxFileBytes: 1024,
+      listFiles: async () => ["linked.md"],
+    });
+
+    expect(result.files).toEqual([]);
+    expect(result.skipped).toContainEqual({
+      path: "linked.md",
+      reason: "symbolic link",
+    });
   });
 
   it("detects binary buffers", () => {
