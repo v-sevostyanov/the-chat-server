@@ -43,7 +43,7 @@ function buildInfraEnv(): NodeJS.ProcessEnv {
     CORS_ALLOWED_ORIGINS: "",
     TRUST_PROXY: "false",
     HOST: "127.0.0.1",
-    PORT: "0",
+    PORT: "3000",
   };
 }
 

@@ -6,7 +6,7 @@ module.exports = [
     ignores: ["dist/**", "node_modules/**", "src/db/migrations/**"],
   },
   {
-    files: ["src/**/*.ts", "test/**/*.ts", "drizzle.config.ts"],
+    files: ["src/**/*.ts", "test/**/*.ts", "tools/**/*.ts", "drizzle.config.ts"],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
